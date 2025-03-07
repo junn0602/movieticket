@@ -1,14 +1,8 @@
-
 <%@ page import="entity.Account,entity.Movie" %>
 <%@ page import="java.util.List" %>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-
-
 <%
-   
-    
     Object accObj = session.getAttribute("account");
     Account account = null;
     if (accObj instanceof Account) {
@@ -18,323 +12,247 @@
     boolean isAdmin = isLoggedIn && "admin".equalsIgnoreCase(account.getRole());
     boolean isManager = isLoggedIn && "Manager".equalsIgnoreCase(account.getRole());
     Integer customerID = (Integer) session.getAttribute("CustomerID");
-    
-    
 %>
 <!DOCTYPE html>
 <html>
-
     <head>
-        <!-- Basic -->
         <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <!-- Mobile Metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <!-- Site Metas -->
-        <meta name="keywords" content="" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-
         <title>Lodge</title>
-
-        <!-- slider stylesheet -->
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
-
-        <!-- bootstrap core css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-
-        <!-- fonts style -->
-        <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Poppins:400,600,700&display=swap" rel="stylesheet">
-        <!-- Custom styles for this template -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet" />
-        <!-- responsive style -->
         <link href="css/responsive.css" rel="stylesheet" />
 
         <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: Arial, sans-serif;
-
-            }
-
             .navbar {
-                background: #333;
-                color: white;
+                background: #fff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                padding: 15px 30px;
+            }
+
+            .navbar-container {
+                max-width: 1200px;
+                margin: 0 auto;
                 display: flex;
+                align-items: center;
                 justify-content: space-between;
-                align-items: center;
-                padding: 0px 30px;
-                width: 100%; /* Phủ toàn bộ chiều ngang */
-                position: relative;
-                box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước */
-
             }
 
-
-            .navbar .logo {
-                font-size: 28px;
-                font-weight: bold;
+            .logo {
                 display: flex;
                 align-items: center;
+                text-decoration: none;
+                color: #333;
             }
 
-            .navbar .logo img {
-                height: 40px;
+            .logo img {
+                height: 35px;
                 margin-right: 10px;
             }
 
-            .navbar .menu {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
+            .logo span {
+                font-size: 24px;
+                font-weight: 600;
             }
 
-            .navbar ul {
-                list-style: none;
+            .nav-menu {
                 display: flex;
+                align-items: center;
+                gap: 30px;
             }
 
-            .navbar ul li {
-                margin: 0 20px;
-            }
-
-            .navbar ul li a {
-                color: white;
+            .nav-menu a {
+                color: #333;
                 text-decoration: none;
-                font-size: 18px;
-                transition: 0.3s;
+                font-size: 16px;
+                font-weight: 500;
+                transition: color 0.3s ease;
             }
 
-            .navbar ul li a:hover {
-                color: #f39c12;
-            }
-            .profile {
-                margin-left: auto;
-            }
-
-            .profile a {
-                color: white;
-                text-decoration: none;
-                font-size: 18px;
-                transition: 0.3s;
-            }
-
-            .profile a:hover {
-                color: #f39c12;
-            }
-            .img-box img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 8px;
-            }
-
-            .detail_box {
-                padding: 20px;
-                text-align: left;
-            }
-
-            .detail_box h2 span {
+            .nav-menu a:hover {
                 color: #ff9800;
-                font-weight: bold;
             }
 
-            .detail_box a {
-                display: inline-block;
-                background: #ff9800;
-                color: white;
-                padding: 10px 20px;
+            .profile-menu {
+                position: relative;
+            }
+
+            .profile-container {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                min-width: 200px;
+                z-index: 1000;
+            }
+
+            .profile-container.active {
+                display: block;
+            }
+
+            .profile-container a {
+                display: block;
+                padding: 8px 0;
+                color: #333;
                 text-decoration: none;
-                border-radius: 5px;
-                margin-top: 10px;
+                transition: color 0.3s ease;
             }
 
-            .detail_box a:hover {
-                background: #e68900;
-                .img-box {
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    overflow: hidden;
-                }
+            .profile-container a:hover {
+                color: #ff9800;
+            }
 
-                .img-box img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-                #profileContainer {
+            @media (max-width: 768px) {
+                .nav-menu {
                     display: none;
-                    position: absolute;
-                    top: 40px; /* Điều chỉnh vị trí theo nhu cầu */
-                    right: 0;
-                    background: white;
-                    padding: 15px;
-                    border-radius: 8px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-                    width: 250px;
-                    z-index: 9999; /* Đảm bảo luôn hiển thị trên cùng */
                 }
             }
         </style>
-
     </head>
 
     <body>
         <%List<Movie> list = (List<Movie>) request.getAttribute("listM");%>
         <div class="hero_area">
-            <!-- header section strats -->
-
             <nav class="navbar">
-                <a class="logo" href="home.jsp">
-                    <img src="images/logo1.png" alt="">
-                    <span>Lodge</span>
-                </a>
-                <div class="menu">
-                    <ul>
-                        <li><a href="MovieController?action=list">Movie</a></li>
-                        <li><a href="CinemaController">Cinema</a></li>
-                            <% if (!isLoggedIn) { %>
-                        <li><a href="login.jsp">Login</a></li>
-                            <% } %>
-                    </ul>
-                    <li><a href="account?service=changeCustomerProfile">profile</a></li>
-                </div>
-
-                <% if (isLoggedIn) { %>
-                <div class="profile">
-                    <a href="#" onclick="showProfile(event)">Your Profile</a>
-                    <div id="profileContainer" style="display: none; position: absolute; background: white; padding: 15px; border-radius: 8px;
-                         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); width: 250px;">
-                        <h3 style="color: black">Tài khoản</h3>
-                        <p style="color: black"><strong>Tên:</strong> <%= account.getName() %></p>
-                        <p style="color: black"><strong>Mã khách hàng:</strong> <%= customerID %></p>
-
-                        <% if (isAdmin || isManager) { %>
-                        <p><a href="admin" class="btn btn-warning">Manager</a></p>
+                <div class="navbar-container">
+                    <a class="logo" href="home.jsp">
+                        <img src="images/logo1.png" alt="Lodge">
+                        <span>Lodge</span>
+                    </a>
+                    <div class="nav-menu">
+                        <a href="MovieController?action=list">Movie</a>
+                        <a href="CinemaController">Cinema</a>
+                        <% if (!isLoggedIn) { %>
+                            <a href="login.jsp">Login</a>
+                        <% } else { %>
+                            <div class="profile-menu">
+                                <a href="#" onclick="showProfile(event)">
+                                    <%= account.getName() %>
+                                </a>
+                                <div id="profileContainer" class="profile-container">
+                                    <% if (isAdmin || isManager) { %>
+                                        <a href="admin">Admin Dashboard</a>
+                                    <% } %>
+                                    <a href="profile.jsp">Profile</a>
+                                    <a href="LogoutController">Logout</a>
+                                </div>
+                            </div>
                         <% } %>
-
-                        <p><a href="account?service=changeCustomerProfile" class="btn btn-primary">Cập nhật hồ sơ</a></p>
-                        <p><a href="account?service=changePassword" class="btn btn-secondary">Đổi mật khẩu</a></p>
-                        <p><a href="logout" class="btn btn-danger">Logout</a></p> <!-- Thêm nút Logout vào Profile -->
-                        <button onclick="closeProfile()">Đóng</button>
                     </div>
-                    <p><strong>Xin chào, <%= account.getName() %>!</strong></p>
                 </div>
-                <% } %>
+            </nav>
+            <!-- slider section -->
+            <section class=" slider_section position-relative">
+                <div class="design-box">
+                    <img src="images/design-1.png" alt="">
+                </div>
 
-
-
-                <!-- end header section -->
-                <!-- slider section -->
-                <section class=" slider_section position-relative">
-                    <div class="design-box">
-                        <img src="images/design-1.png" alt="">
-                    </div>
-
-                    <!--                <div class="container">
-                                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                                            <ol class="carousel-indicators">
-                                                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                                                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                                                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                                            </ol>
-                                            <div class="carousel-inner">
-                                                 Slide 1 
-                                                <div class="carousel-item active">
-                                                    <div class="row">
-                                                         Cột trái: Hình ảnh 
-                                                        <div class="col-md-6">
-                                                            <div class="img-box">
-                                                                <img src="images/banner1.jpeg" class="img-fluid" alt="Movie 1">
-                                                            </div>
+                <!--                <div class="container">
+                                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                        <ol class="carousel-indicators">
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                        </ol>
+                                        <div class="carousel-inner">
+                                             Slide 1 
+                                            <div class="carousel-item active">
+                                                <div class="row">
+                                                     C?t tr�i: H�nh ?nh 
+                                                    <div class="col-md-6">
+                                                        <div class="img-box">
+                                                            <img src="images/banner1.jpeg" class="img-fluid" alt="Movie 1">
                                                         </div>
-                                                         Cột phải: Thông tin phim 
-                                                        <div class="col-md-6">
-                                                            <div class="detail_box">
-                                                                <h2>
-                                                                    <span>New Movies</span>
-                                                                    <hr>
-                                                                </h2>
-                                                                <h1>Movie 1</h1>
-                                                                <p>
-                                                                    Lorem ipsum dolor sit amet consectetur adipiscing elit. 
-                                                                </p>
-                                                                <div>
-                                                                    <a href="">Order Now</a>
-                                                                </div>
+                                                    </div>
+                                                     C?t ph?i: Th�ng tin phim 
+                                                    <div class="col-md-6">
+                                                        <div class="detail_box">
+                                                            <h2>
+                                                                <span>New Movies</span>
+                                                                <hr>
+                                                            </h2>
+                                                            <h1>Movie 1</h1>
+                                                            <p>
+                                                                Lorem ipsum dolor sit amet consectetur adipiscing elit. 
+                                                            </p>
+                                                            <div>
+                                                                <a href="">Order Now</a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                 Slide 2 
-                                                <div class="carousel-item">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="img-box">
-                                                                <img src="images/banner2.jpeg" class="img-fluid" alt="Movie 2">
-                                                            </div>
+                                            </div>
+                                             Slide 2 
+                                            <div class="carousel-item">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="img-box">
+                                                            <img src="images/banner2.jpeg" class="img-fluid" alt="Movie 2">
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="detail_box">
-                                                                <h2>
-                                                                    <span>New Movies</span>
-                    
-                                                                </h2>
-                                                                <h1>Movie 2</h1>
-                                                                <p>
-                                                                    Lorem ipsum dolor sit amet consectetur adipiscing elit.
-                                                                </p>
-                                                                <div>
-                                                                    <a href="">Order Now</a>
-                                                                </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="detail_box">
+                                                            <h2>
+                                                                <span>New Movies</span>
+                
+                                                            </h2>
+                                                            <h1>Movie 2</h1>
+                                                            <p>
+                                                                Lorem ipsum dolor sit amet consectetur adipiscing elit.
+                                                            </p>
+                                                            <div>
+                                                                <a href="">Order Now</a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                 Slide 3 
-                                                <div class="carousel-item">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="img-box">
-                                                                <img src="images/banner3.jpg" class="img-fluid" alt="Movie 3">
-                                                            </div>
+                                            </div>
+                                             Slide 3 
+                                            <div class="carousel-item">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="img-box">
+                                                            <img src="images/banner3.jpg" class="img-fluid" alt="Movie 3">
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="detail_box">
-                                                                <h2>
-                                                                    <span>New Movies</span>
-                    
-                                                                </h2>
-                                                                <h1>Movie 3</h1>
-                                                                <p>
-                                                                    Lorem ipsum dolor sit amet consectetur adipiscing elit.
-                                                                </p>
-                                                                <div>
-                                                                    <a href="">Order Now</a>
-                                                                </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="detail_box">
+                                                            <h2>
+                                                                <span>New Movies</span>
+                
+                                                            </h2>
+                                                            <h1>Movie 3</h1>
+                                                            <p>
+                                                                Lorem ipsum dolor sit amet consectetur adipiscing elit.
+                                                            </p>
+                                                            <div>
+                                                                <a href="">Order Now</a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>-->
-                    <!-- Nút điều hướng -->
-                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                   
-                    
+                                            </div>
+                                        </div>-->
+                <!-- N�t ?i?u h??ng -->
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+               
+                
 
-                </section>
-                <!-- end slider section -->
+            </section>
+            <!-- end slider section -->
         </div>
 
         <!-- item section -->
@@ -612,29 +530,18 @@
 
 
         <script>
-                            function showProfile(event) {
-                                event.preventDefault();
-                                var profile = document.getElementById('profileContainer');
-                                var link = event.target; // Lấy thẻ <a> được click
-
-                                // Lấy vị trí chính xác của "Your Profile"
-                                var rect = link.getBoundingClientRect();
-                                var scrollTop = window.scrollY || document.documentElement.scrollTop;
-                                var scrollLeft = window.scrollX || document.documentElement.scrollLeft;
-
-                                profile.style.display = 'block';
-                                profile.style.position = 'absolute';
-                                profile.style.top = (rect.top + rect.height + scrollTop) + 'px';
-                                profile.style.left = (rect.left + scrollLeft) + 'px';
-                            }
-
-                            function closeProfile() {
-                                document.getElementById('profileContainer').style.display = 'none';
-                            }
-
+            function showProfile(event) {
+                event.preventDefault();
+                var profile = document.getElementById('profileContainer');
+                profile.classList.toggle('active');
+                
+                // Close profile menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.profile-menu')) {
+                        profile.classList.remove('active');
+                    }
+                });
+            }
         </script>
-
-
     </body>
-
 </html>

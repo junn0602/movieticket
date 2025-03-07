@@ -8,21 +8,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet(name="LogoutController", urlPatterns={"/logout"})
+@WebServlet(name="LogoutController", urlPatterns={"/LogoutController"})
 public class LogoutController extends HttpServlet {
    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        // Lấy session hiện tại
         HttpSession session = request.getSession(false);
         
         if (session != null) {
-            session.invalidate(); // Xóa toàn bộ session
+            session.invalidate();
         }
         
-        // Chuyển hướng về trang chủ sau khi logout
-        response.sendRedirect("home");
+        response.sendRedirect(request.getContextPath() + "/home.jsp");
     }
 
     @Override

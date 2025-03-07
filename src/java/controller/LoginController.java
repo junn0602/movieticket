@@ -37,20 +37,23 @@ public class LoginController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             DAOAccount dao = new DAOAccount();
-          
-            
-            
+
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             Account account = dao.AccountLogin(email, password);
             if (account == null) {
                 request.setAttribute("mess", "Wrong email or password");
+
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } else {
                 HttpSession session = request.getSession();
                 session.setAttribute("account", account);
                 session.setAttribute("CustomerID", account.getAccountID());
-                request.getRequestDispatcher("home").forward(request, response);
+                if ("Mananger".equals(account.getRole()) || "Admin".equals(account.getRole())) {
+                    request.getRequestDispatcher("admin").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("home").forward(request, response);
+                }
             }
         }
     }

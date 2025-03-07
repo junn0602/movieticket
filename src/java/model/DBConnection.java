@@ -34,7 +34,7 @@ public class DBConnection {
     }
     public DBConnection(){
         this("jdbc:sqlserver://localhost:1433;databaseName=swp391",
-                "sa","sa");
+                "sa","123456");
     }
     
     
